@@ -4,6 +4,7 @@ import { PgProvider } from '../db/pg.provider';
 import { TaskMapper } from '../mapper/task.mapper';
 
 interface GetAllTaskInput {
+  listId?: number;
   status?: string;
   limit?: number;
   offset?: number;
@@ -54,6 +55,7 @@ export class TaskRepository {
   }
 
   public async getAll({
+    listId = null,
     status = null,
     limit = 10,
     offset = 0,
@@ -61,11 +63,12 @@ export class TaskRepository {
     const res = await this.pgProvider.query(
       `
         Select * from ${TABLE_NAME}
-        where ($3::text IS NULL OR status = $3)
+        where ($3::text IS NULL OR status = $3) 
+          AND ($4::integer IS NULL OR list_id = $4)
         Order By created_at
         Limit $1 offset $2
     `,
-      [limit, offset, status]
+      [limit, offset, status, listId]
     );
 
     return res.rows.map(TaskMapper.toEntity);

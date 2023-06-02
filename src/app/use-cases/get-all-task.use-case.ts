@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common';
 import { TaskRepository } from '../repository/task.repository';
 
 interface GetAllTaskInput {
+  listId?: number;
   status?: string;
   limit?: number;
   offset?: number;
