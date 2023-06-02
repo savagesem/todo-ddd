@@ -1,0 +1,43 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Task {
+  id: Int!
+  title: String!
+  status: String!
+  listId: Int
+}
+
+type List {
+  id: Int!
+  name: String!
+}
+
+type Query {
+  tasks(input: GetTasksInput!): [Task!]!
+  lists(input: GetListsInput!): [List!]!
+}
+
+input GetTasksInput {
+  listId: Int
+  status: String
+  limit: Int! = 10
+  offset: Int! = 0
+}
+
+input GetListsInput {
+  limit: Int! = 10
+  offset: Int! = 0
+}
+
+type Mutation {
+  createTask(createTaskInput: CreateTaskInput!): Boolean!
+  markTaskAsDone(id: Float!): Boolean!
+  addTaskToList(id: Float!, listId: Float!): Boolean!
+  createList(name: String!): Boolean!
+}
+
+input CreateTaskInput {
+  title: String!
+}

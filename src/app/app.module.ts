@@ -18,7 +18,7 @@ import { TaskController } from './controllers/task.controller';
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true,
+      autoSchemaFile: 'schema.gql',
     }),
   ],
   controllers: [TaskController],
