@@ -3,6 +3,12 @@ import { Inject } from '@nestjs/common';
 import { PgProvider } from '../db/pg.provider';
 import { TaskMapper } from '../mapper/task.mapper';
 
+interface GetAllTaskInput {
+  status?: string;
+  limit?: number;
+  offset?: number;
+}
+
 export class TaskRepository {
   @Inject()
   private readonly pgProvider: PgProvider;
@@ -15,10 +21,19 @@ export class TaskRepository {
       .join(', ');
     const values = Object.values(dbRecord);
 
-    return this.pgProvider.query(
-      `INSERT INTO task (${fields.join(',')} ) VALUES (${fieldToValue})`,
-      [...values]
-    );
+    if (task.id) {
+      return this.pgProvider.query(
+        `UPDATE task SET (${fields.join(
+          ','
+        )}) = (${fieldToValue}) WHERE id = $${values.length + 1}`,
+        [...values, task.id]
+      );
+    } else {
+      return this.pgProvider.query(
+        `INSERT INTO task (${fields.join(',')} ) VALUES (${fieldToValue})`,
+        [...values]
+      );
+    }
   }
 
   public async getById(id: number) {
@@ -31,11 +46,23 @@ export class TaskRepository {
       throw new Error('Task not found');
     }
 
-    return TaskEntity.create(res.rows[0]);
+    return TaskEntity.create(TaskMapper.toEntity(res.rows[0]));
   }
 
-  public async getAll(): Promise<TaskEntity[]> {
-    const res = await this.pgProvider.query('Select * from task');
+  public async getAll({
+    status = null,
+    limit = 10,
+    offset = 0,
+  }: GetAllTaskInput): Promise<TaskEntity[]> {
+    const res = await this.pgProvider.query(
+      `
+        Select * from task
+        where ($3::text IS NULL OR status = $3)
+        Order By created_at 
+        Limit $1 offset $2
+    `,
+      [limit, offset, status]
+    );
 
     return res.rows.map((raw) => TaskEntity.create(raw));
   }
