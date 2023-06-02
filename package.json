@@ -2,6 +2,9 @@
   "name": "@org/source",
   "version": "0.0.0",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.12.1"
+  },
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
@@ -9,10 +12,15 @@
   },
   "private": true,
   "dependencies": {
+    "@apollo/server": "^4.7.1",
+    "@nestjs/apollo": "^11.0.6",
     "@nestjs/common": "^9.1.1",
     "@nestjs/core": "^9.1.1",
+    "@nestjs/graphql": "^11.0.6",
     "@nestjs/platform-express": "^9.1.1",
     "axios": "^1.0.0",
+    "graphql": "^16.6.0",
+    "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "tslib": "^2.3.0"
