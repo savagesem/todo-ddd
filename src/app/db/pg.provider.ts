@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { Logger } from '@nestjs/common';
 
 class Query {
   query: string;
@@ -6,7 +7,7 @@ class Query {
 }
 export class PgProvider {
   private pool: Pool;
-
+  private readonly logger = new Logger(PgProvider.name);
   constructor() {
     this.pool = new Pool({
       host: 'localhost',
@@ -18,6 +19,7 @@ export class PgProvider {
   }
 
   public async query(query: string, params?: any[]) {
+    this.logger.debug(`${query} ${params}`);
     return this.pool.query(query, params);
   }
 

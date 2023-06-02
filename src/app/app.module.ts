@@ -12,6 +12,7 @@ import { PgProvider } from './db/pg.provider';
 
 import * as useCases from './use-cases';
 import { ListRepository } from './repository/list.repository';
+import { TaskController } from './controllers/task.controller';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { ListRepository } from './repository/list.repository';
       autoSchemaFile: true,
     }),
   ],
-  controllers: [],
+  controllers: [TaskController],
   providers: [
     TaskRepository,
     ListRepository,

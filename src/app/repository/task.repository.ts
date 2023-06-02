@@ -54,6 +54,19 @@ export class TaskRepository {
     return TaskEntity.create(TaskMapper.toEntity(res.rows[0]));
   }
 
+  public async getByExternalId(externalId: string, externalProvider: string) {
+    const res = await this.pgProvider.query(
+      `Select * from ${TABLE_NAME} where external_id = $1 AND external_provider = $2`,
+      [externalId, externalProvider]
+    );
+
+    if (res.rowCount === 0) {
+      throw new Error('Task not found');
+    }
+
+    return TaskEntity.create(TaskMapper.toEntity(res.rows[0]));
+  }
+
   public async getAll({
     listId = null,
     status = null,

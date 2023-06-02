@@ -24,7 +24,7 @@ export abstract class BaseEntity {
     this.deleted = new Date();
   }
 
-  public update() {
+  protected update() {
     this.updated = new Date();
   }
 }

@@ -46,4 +46,10 @@ export class TaskEntity extends BaseEntity {
     this.listId = listId;
     this.update();
   }
+
+  public updateTask(props: { status?: TaskStatus; title?: string }) {
+    this.title = props.title || this.title;
+    this.status = props.status || this.status;
+    this.update();
+  }
 }
