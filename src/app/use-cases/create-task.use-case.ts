@@ -19,8 +19,6 @@ export class CreateTaskUseCase {
       externalProvider: input.externalProvider,
     });
 
-    console.log(task);
-
     const res = await this.taskRepository.save(task);
     return res.rowCount > 0;
   }
