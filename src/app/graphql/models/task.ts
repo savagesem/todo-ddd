@@ -10,4 +10,7 @@ export class Task {
 
   @Field(() => String)
   status: string;
+
+  @Field(() => Int, { nullable: true })
+  listId?: number;
 }

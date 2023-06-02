@@ -2,27 +2,30 @@ import { TaskEntity } from '../entity/task.entity';
 import { Task } from '../graphql/models/task';
 
 export class TaskMapper {
-  public static toDb(task: TaskEntity) {
+  public static toDb(entity: TaskEntity) {
     return {
-      title: task.title,
-      status: task.status,
-      external_id: task.externalId,
-      external_provider: task.externalProvider,
-      created_at: task.created,
-      updated_at: task.updated,
-      deleted_at: task.deleted,
+      id: entity.id,
+      title: entity.title,
+      list_id: entity.listId,
+      status: entity.status,
+      external_id: entity.externalId,
+      external_provider: entity.externalProvider,
+      created_at: entity.created,
+      updated_at: entity.updated,
+      deleted_at: entity.deleted,
     };
   }
 
   public static toEntity(task: any) {
     return TaskEntity.create({
-      created: task.created_at,
-      deleted: task.deleted_at,
-      externalId: task.external_id,
-      externalProvider: task.external_provider,
       id: task.id,
       status: task.status,
       title: task.title,
+      listId: task.list_id,
+      externalId: task.external_id,
+      externalProvider: task.external_provider,
+      created: task.created_at,
+      deleted: task.deleted_at,
       updated: task.updated_at,
     });
   }
@@ -32,6 +35,7 @@ export class TaskMapper {
       id: task.id,
       title: task.title,
       status: task.status,
+      listId: task.listId,
     };
   }
 }

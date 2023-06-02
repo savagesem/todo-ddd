@@ -7,12 +7,14 @@ export enum TaskStatus {
 
 interface TaskProps extends BaseEntityProps {
   title: string;
+  listId?: number;
   status?: TaskStatus;
   externalId?: string;
   externalProvider?: string;
 }
 export class TaskEntity extends BaseEntity {
   title: string;
+  listId?: number;
   status: TaskStatus;
   externalId?: string;
   externalProvider?: string;
@@ -25,6 +27,7 @@ export class TaskEntity extends BaseEntity {
       deleted: props.deleted,
     });
     this.title = props.title;
+    this.listId = props.listId;
     this.status = props.status || TaskStatus.OPEN;
     this.externalId = props.externalId;
     this.externalProvider = props.externalProvider;
@@ -36,6 +39,11 @@ export class TaskEntity extends BaseEntity {
 
   public markAsDone() {
     this.status = TaskStatus.DONE;
+    this.update();
+  }
+
+  public addToTheList(listId: number) {
+    this.listId = listId;
     this.update();
   }
 }

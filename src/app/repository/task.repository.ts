@@ -9,28 +9,32 @@ interface GetAllTaskInput {
   offset?: number;
 }
 
+const TABLE_NAME = 'task';
+
 export class TaskRepository {
   @Inject()
   private readonly pgProvider: PgProvider;
 
-  save(task: TaskEntity) {
-    const dbRecord = TaskMapper.toDb(task);
+  save(entity: TaskEntity) {
+    const { id, ...dbRecord } = TaskMapper.toDb(entity);
     const fields = Object.keys(dbRecord);
     const fieldToValue = fields
       .map((field, index) => `$${index + 1}`)
       .join(', ');
     const values = Object.values(dbRecord);
 
-    if (task.id) {
+    if (entity.id) {
       return this.pgProvider.query(
-        `UPDATE task SET (${fields.join(
+        `UPDATE ${TABLE_NAME} SET (${fields.join(
           ','
         )}) = (${fieldToValue}) WHERE id = $${values.length + 1}`,
-        [...values, task.id]
+        [...values, entity.id]
       );
     } else {
       return this.pgProvider.query(
-        `INSERT INTO task (${fields.join(',')} ) VALUES (${fieldToValue})`,
+        `INSERT INTO ${TABLE_NAME} (${fields.join(
+          ','
+        )} ) VALUES (${fieldToValue})`,
         [...values]
       );
     }
@@ -38,7 +42,7 @@ export class TaskRepository {
 
   public async getById(id: number) {
     const res = await this.pgProvider.query(
-      'Select * from task where id = $1',
+      `Select * from ${TABLE_NAME} where id = $1`,
       [id]
     );
 
@@ -56,14 +60,14 @@ export class TaskRepository {
   }: GetAllTaskInput): Promise<TaskEntity[]> {
     const res = await this.pgProvider.query(
       `
-        Select * from task
+        Select * from ${TABLE_NAME}
         where ($3::text IS NULL OR status = $3)
-        Order By created_at 
+        Order By created_at
         Limit $1 offset $2
     `,
       [limit, offset, status]
     );
 
-    return res.rows.map((raw) => TaskEntity.create(raw));
+    return res.rows.map(TaskMapper.toEntity);
   }
 }
